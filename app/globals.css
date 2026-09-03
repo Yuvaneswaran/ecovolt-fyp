@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-michroma: 'Michroma', sans-serif;
+  --font-bebas: 'Bebas Neue', sans-serif;
+  --blue: #133863;
+  --grey: #7C838B;
+  --bg: #0A0E14;
+  --card-bg: #10151D;
+  --teal: #00D9FF;
+}
+
+html, body {
+  background: var(--bg);
+  color: #E8EAED;
+  scroll-behavior: smooth;
+}
+
+/* --- Neumorphic surfaces --- */
+.neu-raised {
+  background: var(--card-bg);
+  border-radius: 20px;
+  box-shadow:
+    8px 8px 18px rgba(0, 0, 0, 0.55),
+    -8px -8px 18px rgba(124, 131, 139, 0.06);
+}
+
+.neu-inset {
+  background: var(--card-bg);
+  border-radius: 20px;
+  box-shadow:
+    inset 6px 6px 14px rgba(0, 0, 0, 0.6),
+    inset -6px -6px 14px rgba(124, 131, 139, 0.04);
+}
+
+.switch-off {
+  background: #161D29;
+  border: 1px solid rgba(124, 131, 139, 0.3);
+  border-radius: 20px;
+  box-shadow:
+    inset 4px 4px 10px rgba(0, 0, 0, 0.5),
+    inset -4px -4px 10px rgba(124, 131, 139, 0.05);
+}
+
+.neu-glow {
+  box-shadow:
+    8px 8px 18px rgba(0, 0, 0, 0.55),
+    -8px -8px 18px rgba(124, 131, 139, 0.06),
+    0 0 20px rgba(19, 56, 99, 0.9);
+}
+
+.logo-badge {
+  box-shadow:
+    6px 6px 14px rgba(0, 0, 0, 0.55),
+    -6px -6px 14px rgba(124, 131, 139, 0.06),
+    0 0 16px rgba(19, 56, 99, 0.7);
+  border: 1px solid rgba(19, 56, 99, 0.5);
+}
+
+/* --- Skeleton loader --- */
+@keyframes pulseSkeleton {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+.skeleton {
+  background: var(--card-bg);
+  border-radius: 12px;
+  animation: pulseSkeleton 1.4s ease-in-out infinite;
+}
+
+/* --- Circuit trace ambient animation --- */
+@keyframes dashFlow {
+  to { stroke-dashoffset: -200; }
+}
+.circuit-line {
+  stroke-dasharray: 6 10;
+  animation: dashFlow 6s linear infinite;
+}
+
+/* --- Count tick animation --- */
+@keyframes tickPulse {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.15); color: var(--teal); }
+  100% { transform: scale(1); }
+}
+.tick-animate {
+  animation: tickPulse 0.5s ease-out;
+}
+
+/* --- Toast --- */
+@keyframes toastIn {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.toast-in { animation: toastIn 0.3s ease-out; }
+
+::selection {
+  background: var(--blue);
+  color: white;
+}
+
+/* --- Brightness slider with lightning bolt thumb --- */
+.lightning-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(124, 131, 139, 0.25);
+  outline: none;
+}
+
+.lightning-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #10151D;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300D9FF'%3E%3Cpath d='M13 2 L4 14 h6 l-1 8 9-12 h-6 z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px 16px;
+  box-shadow: 0 0 10px rgba(0, 217, 255, 0.6), 0 2px 6px rgba(0,0,0,0.5);
+  cursor: pointer;
+  border: 1px solid rgba(0, 217, 255, 0.4);
+}
+
+.lightning-slider::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #10151D;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300D9FF'%3E%3Cpath d='M13 2 L4 14 h6 l-1 8 9-12 h-6 z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px 16px;
+  box-shadow: 0 0 10px rgba(0, 217, 255, 0.6), 0 2px 6px rgba(0,0,0,0.5);
+  cursor: pointer;
+  border: 1px solid rgba(0, 217, 255, 0.4);
+}
