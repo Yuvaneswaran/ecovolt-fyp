@@ -39,6 +39,7 @@ export default function BrightnessSlider() {
         type="range"
         min="0"
         max="100"
+        step="10"
         value={brightness}
         onChange={handleChange}
         className="lightning-slider w-full cursor-pointer"
