@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { ref, onValue } from "firebase/database";
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
@@ -10,59 +11,148 @@ export default function TodayUsageSection() {
   const [tariff, setTariff] = useState(0.218);
   const [todayDate, setTodayDate] = useState("");
 
+  // ==========================================
+  // DATE
+  // ==========================================
   useEffect(() => {
     const updateDate = () => {
       const d = new Date();
-      setTodayDate(d.toLocaleDateString("en-MY", { day: "numeric", month: "long", year: "numeric" }));
+
+      setTodayDate(
+        d.toLocaleDateString("en-MY", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+      );
     };
+
     updateDate();
-    const interval = setInterval(updateDate, 60000); // refresh in case date rolls over while page is open
+
+    const interval = setInterval(updateDate, 60000);
+
     return () => clearInterval(interval);
   }, []);
 
+  // ==========================================
+  // LOAD APPLIANCES + TARIFF
+  // ==========================================
   useEffect(() => {
     async function fetchStatic() {
-      const snap = await getDocs(collection(db, "appliances"));
-      setAppliances(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+      const snap = await getDocs(
+        collection(db, "appliances")
+      );
 
-      const tariffSnap = await getDoc(doc(db, "config", "tariff"));
-      if (tariffSnap.exists()) setTariff(tariffSnap.data().ratePerKwh ?? 0.218);
+      setAppliances(
+        snap.docs.map((d) => ({
+          id: d.id,
+          ...d.data(),
+        }))
+      );
+
+      const tariffSnap = await getDoc(
+        doc(db, "config", "tariff")
+      );
+
+      if (tariffSnap.exists()) {
+        setTariff(
+          tariffSnap.data().ratePerKwh ?? 0.218
+        );
+      }
     }
+
     fetchStatic();
   }, []);
 
+  // ==========================================
+  // READ TODAY'S LIVE CONSUMPTION
+  // ==========================================
   useEffect(() => {
-    const dateKey = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
-    const consumptionRef = ref(rtdb, `consumption/${dateKey}`);
-    const unsub = onValue(consumptionRef, (snap) => {
-      setHoursData(snap.val() || {});
-    });
-    return () => unsub();
-  }, []);
+  const now = new Date();
 
+  const dateKey =
+    `${now.getFullYear()}-` +
+    `${String(now.getMonth() + 1).padStart(2, "0")}-` +
+    `${String(now.getDate()).padStart(2, "0")}`;
+
+  console.log("TODAY DATE KEY:", dateKey);
+
+  const consumptionRef = ref(
+    rtdb,
+    `consumption/${dateKey}`
+  );
+
+  const unsub = onValue(consumptionRef, (snap) => {
+    console.log("TODAY FIREBASE DATA:", snap.val());
+
+    setHoursData(snap.val() || {});
+  });
+
+  return () => unsub();
+}, []);
+
+  // ==========================================
+  // DISPLAY
+  // ==========================================
   return (
     <div className="neu-raised p-6">
+
       <h3 className="font-heading font-bold text-sm text-white text-center mb-6">
         {todayDate}
       </h3>
+
       <div className="grid grid-cols-2 gap-4">
+
         {appliances.map((a) => {
-          const hours = hoursData[a.id]?.hoursToday ?? 0;
-          const bill = hours * (a.watt / 1000) * tariff;
+
+          // CALCULATIONS
+          const hours =
+            hoursData[a.id]?.hoursToday ?? 0;
+
+          const watt =
+            Number(a.watt) || 0;
+
+          const energy =
+            hours * (watt / 1000);
+
+          const bill =
+            energy * tariff;
+
           return (
-            <div key={a.id} className="neu-inset p-4 text-center">
-              <div className="font-sub tracking-wide text-teal text-sm mb-2 capitalize">
+            <div
+              key={a.id}
+              className="neu-inset p-4 text-center"
+            >
+
+              {/* APPLIANCE NAME */}
+              <div className="font-sub tracking-wide text-teal text-sm mb-3 capitalize">
                 {a.name || a.id}
               </div>
+
+              {/* HOURS */}
+              <div className="font-body text-xs text-grey mb-1">
+                Used: {hours.toFixed(3)} hrs
+              </div>
+
+              {/* ENERGY */}
+              <div className="font-body text-xs text-grey mb-1">
+                Energy: {energy.toFixed(4)} kWh
+              </div>
+
+              {/* TARIFF */}
               <div className="font-body text-xs text-grey">
-                {hours.toFixed(2)} hrs × RM{tariff}
+                Rate: RM {tariff.toFixed(3)}/kWh
               </div>
-              <div className="font-heading text-white text-base mt-2">
-                RM {bill.toFixed(2)}
+
+              {/* BILL */}
+              <div className="font-heading text-white text-base mt-3">
+                RM {bill.toFixed(3)}
               </div>
+
             </div>
           );
         })}
+
       </div>
     </div>
   );
