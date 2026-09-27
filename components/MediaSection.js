@@ -5,22 +5,31 @@ export default function MediaSection() {
         SEE IT IN ACTION
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Images placeholder */}
-        {[1, 2].map((i) => (
-          <div
-            key={i}
-            className="neu-inset border border-grey/20 rounded-2xl aspect-square flex items-center justify-center"
-          >
-            <span className="font-sub tracking-wide text-grey text-sm">
-              IMAGE {i}
-            </span>
-          </div>
-        ))}
-        {/* Video placeholder */}
-        <div className="neu-inset border border-teal/30 rounded-2xl aspect-square flex items-center justify-center">
-          <span className="font-sub tracking-wide text-teal text-sm">
-            VIDEO
-          </span>
+        {/* Image 1 */}
+        <div className="neu-inset border border-grey/20 rounded-2xl aspect-square overflow-hidden">
+          <img
+            src="/media/image1.jpg"
+            alt="EcoVolt system in action"
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        {/* Image 2 */}
+        <div className="neu-inset border border-grey/20 rounded-2xl aspect-square overflow-hidden">
+          <img
+            src="/media/image2.jpg"
+            alt="EcoVolt hardware setup"
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        {/* Video */}
+        <div className="neu-inset border border-teal/30 rounded-2xl aspect-square overflow-hidden">
+          <video
+            src="/media/video.mp4"
+            controls
+            className="w-full h-full object-cover"
+          />
         </div>
       </div>
     </section>
